@@ -1,0 +1,36 @@
+name: Backend CI/CD
+
+on:
+  push:
+    paths:
+      - '**'
+    branches:
+      - main
+  pull_request:
+    paths:
+      - '**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js for backend
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22.5.1
+
+      - name: Install backend dependencies
+        run: |
+          npm install
+
+      - name: Run lint check
+        run: |
+          npm run lint  # Ini akan gagal jika ada warning
+
+      - name: Build backend
+        if: github.ref == 'refs/heads/main'
+        run: |
+          npm run build
